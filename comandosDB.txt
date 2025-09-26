@@ -1,0 +1,54 @@
+
+CREATE DATABASE IF NOT EXISTS SistemaLiberaçãoFuncionários;
+
+USE SistemaLiberaçãoFuncionários;
+
+CREATE TABLE IF NOT EXISTS Funcoes (
+    IDFuncao INT AUTO_INCREMENT PRIMARY KEY,
+    NomeFuncao VARCHAR(50) NOT NULL UNIQUE
+);
+
+INSERT INTO Funcoes (NomeFuncao) VALUES
+    ('Administrador'),
+    ('Supervisor'),
+    ('Líder'),
+    ('Portaria'),
+    ('RH');
+
+
+CREATE TABLE IF NOT EXISTS Usuarios (
+    IDUsuario INT AUTO_INCREMENT PRIMARY KEY,
+    NomeUsuario VARCHAR(50) NOT NULL UNIQUE,
+    Senha VARCHAR(255) NOT NULL,
+    IDFuncao INT,
+    FOREIGN KEY (IDFuncao) REFERENCES Funcoes(IDFuncao)
+) ENGINE=InnoDB;
+
+
+CREATE TABLE IF NOT EXISTS MotivosSaida (
+    IDMotivo INT AUTO_INCREMENT PRIMARY KEY,
+    DescricaoMotivo VARCHAR(100) NOT NULL UNIQUE
+);
+
+
+INSERT INTO MotivosSaida (DescricaoMotivo) VALUES
+    ('Horário de almoço'),
+    ('Compromisso pessoal'),
+    ('Fim do expediente');
+
+CREATE TABLE IF NOT EXISTS SolicitacoesLiberação (
+    IDSolicitacao INT AUTO_INCREMENT PRIMARY KEY,
+    IDUsuarioSolicitante INT,
+    IDUsuarioAutorizador INT,
+    NomeColaborador VARCHAR(100) NOT NULL,
+    Setor VARCHAR(50) NOT NULL,
+    NumeroMatricula VARCHAR(20) NOT NULL,
+    DataHoraSolicitacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    DataHoraAutorizacao TIMESTAMP,
+    HorarioSaida TIME NOT NULL,
+    MotivoSaida VARCHAR(100) NOT NULL,
+    IDMotivo INT,
+    FOREIGN KEY (IDUsuarioSolicitante) REFERENCES Usuarios(IDUsuario),
+    FOREIGN KEY (IDUsuarioAutorizador) REFERENCES Usuarios(IDUsuario),
+    FOREIGN KEY (IDMotivo) REFERENCES MotivosSaida(IDMotivo)
+) ENGINE=InnoDB;
